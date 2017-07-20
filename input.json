@@ -1,0 +1,9 @@
+{
+	"PassengerCount" : 2,
+	"JourneyType" : 1,
+	"Origin" : "BOS",
+	"Destination" : "LAX",
+	"FromDate" : "2017-07-29",
+	"ReturnDate" : "6",
+	"SearchType" :  1
+}

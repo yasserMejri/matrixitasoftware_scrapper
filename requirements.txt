@@ -1,0 +1,8 @@
+EasyProcess==0.2.3
+lxml==3.8.0
+pdb==0.1
+pymongo==3.4.0
+python-gnupg==0.4.1
+PyVirtualDisplay==0.2.1
+PyYAML==3.12
+selenium==3.4.3
