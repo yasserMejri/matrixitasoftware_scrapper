@@ -192,7 +192,7 @@ def get_page_list():
 
 	save_result()
 
-	if len(result) > parameters['limit'] and parameters['SearchType'] == 1:
+	if len(result['list']) > parameters['limit'] and parameters['SearchType'] == 1:
 		exit_script()
 
 
