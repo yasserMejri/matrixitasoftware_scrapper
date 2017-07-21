@@ -33,8 +33,8 @@ import pdb
 #		1 : monthly
 
 
-display = Display(visible=0, size=(800, 600))
-display.start()
+# display = Display(visible=0, size=(800, 600))
+# display.start()
 
 parameters = None
 
@@ -92,18 +92,6 @@ passengercount = Select(active_container.find_element_by_xpath('//label[text()="
 searchbutton = driver.find_element_by_xpath('//button[@id="searchButton-0"]')
 
 
-# Feed fields with parameters
-
-from_location.send_keys(parameters['Origin'])
-to_location.send_keys(parameters['Destination'])
-fromdate.send_keys(parameters['FromDate'] + Keys.TAB)
-if parameters['JourneyType']:
-	retdate.send_keys(parameters['ReturnDate'] + Keys.TAB)
-passengercount.select_by_index(parameters['PassengerCount'] - 1)
-
-from_location.send_keys(Keys.RETURN)
-
-
 def save_result():
 	global result
 
@@ -117,7 +105,7 @@ def save_result():
 def exit_script():
 	save_result()
 	try:
-		# driver.close()
+		driver.close()
 
 		display.stop()
 
@@ -183,7 +171,7 @@ def get_page_list():
 		json_item['ariline'] = ' '.join(source.xpath('//tr[1]/td[1]//text()'))
 		json_item['flights'] = []
 		idx = 2
-		price = int(json_item['price'].replace('US$','').replace('*','').replace(',',''))
+		price = int(json_item['price'].replace('US','').replace('*','').replace(',','').replace('$',''))
 		if lowest_price == -1 or lowest_price > price:
 			lowest_price = price
 		for tr in source.xpath('//tr'):
@@ -204,13 +192,30 @@ def get_page_list():
 
 	save_result()
 
+	if len(result) > parameters['limit'] and parameters['SearchType'] == 1:
+		exit_script()
+
+
+# Feed fields with parameters
+
+from_location.send_keys(parameters['Origin'])
+to_location.send_keys(parameters['Destination'])
+fromdate.send_keys(parameters['FromDate'] + Keys.TAB)
+if parameters['JourneyType']:
+	retdate.send_keys(parameters['ReturnDate'] + Keys.TAB)
+passengercount.select_by_index(parameters['PassengerCount'] - 1)
+
+wait_load()
+
+from_location.send_keys(Keys.RETURN)
+
 
 if parameters['SearchType'] == 0:
 	get_page_list()
 else:
 	print "Wait for loading month page"
 	wait_load()
-	days = driver.find_elements_by_xpath("//div[contains(text(), 'US$')]/..")
+	days = driver.find_elements_by_xpath("//div[contains(text(), '$')]/..")
 	for idx in range(0, len(days)):
 		print "Getting " + str(idx) + " day page"
 		days[idx].click()
@@ -218,6 +223,6 @@ else:
 		driver.execute_script("window.history.go(-1)")
 		print "Navigate back"
 		wait_load()
-		days = driver.find_elements_by_xpath("//div[contains(text(), 'US$')]/..")
+		days = driver.find_elements_by_xpath("//div[contains(text(), '$')]/..")
 
 exit_script()

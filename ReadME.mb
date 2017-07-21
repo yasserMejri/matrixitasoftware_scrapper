@@ -1,0 +1,57 @@
+http://matrix.itasoftware.com/
+
+
+---- INPUT parameter ----
+
+{
+	"PassengerCount" : 2,
+	"JourneyType" : 0,
+	"Origin" : "BOS",
+	"Destination" : "LAX",
+	"FromDate" : "2017-07-29",
+	"ReturnDate" : "2017-07-31",
+	"SearchType" :  0
+}
+
+JourneyType 
+	0 : one way
+	1 : round trip
+
+SearchType
+	0 : exact date
+	1 : monthly
+
+
+
+{
+	"PassengerCount" : 2,
+	"JourneyType" : 0,
+	"Origin" : "BOS",
+	"Destination" : "LAX",
+	"FromDate" : "2017-07-29",
+	"ReturnDate" : "5", // Lenght of stay
+	"SearchType" :  1
+}
+
+
+--- OUTPUT parameter ---
+
+[
+	{
+		"price": 465, 
+		"airline" : "United",
+		"flights": [
+			{
+				"origin" : "BOS",
+				"dep_time" :"12:12",
+				"destination": "LAX", 
+				"arr_time" : "12:12",
+				"dur": "8:12"
+			}
+		]
+	}, {
+		
+	}
+]
+
+
