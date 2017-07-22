@@ -11,6 +11,7 @@ import time
 import json
 import csv
 import pdb
+import re
 
 #	Parameter Format:
 #
@@ -45,6 +46,7 @@ result = {
 
 lowest_price = -1
 
+currency_prefix = ''
 
 driver = webdriver.Chrome(".//chromedriver")
 driver.get("http://matrix.itasoftware.com/")
@@ -171,7 +173,11 @@ def get_page_list():
 		json_item['ariline'] = ' '.join(source.xpath('//tr[1]/td[1]//text()'))
 		json_item['flights'] = []
 		idx = 2
-		price = int(json_item['price'].replace('US','').replace('*','').replace(',','').replace('$',''))
+		# price = int(json_item['price'].replace('US','').replace('*','').replace(',','').replace('$',''))
+		# print re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?', json_item['price'])
+		price = re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?', json_item['price'])[0][0]
+		currency_prefix = json_item['price'].replace(price,'')
+		price = int(price.replace(',',''))
 		if lowest_price == -1 or lowest_price > price:
 			lowest_price = price
 		for tr in source.xpath('//tr'):
@@ -186,7 +192,7 @@ def get_page_list():
 
 		result['list'].append(json_item)
 
-	result['lowest_price'] = 'US$' + str(lowest_price)
+	result['lowest_price'] = currency_prefix + str(lowest_price)
 
 	print str(len(result['list'])) + "  Collected"
 
@@ -215,7 +221,7 @@ if parameters['SearchType'] == 0:
 else:
 	print "Wait for loading month page"
 	wait_load()
-	days = driver.find_elements_by_xpath("//div[contains(text(), '$')]/..")
+	days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
 	for idx in range(0, len(days)):
 		print "Getting " + str(idx) + " day page"
 		days[idx].click()
@@ -223,6 +229,6 @@ else:
 		driver.execute_script("window.history.go(-1)")
 		print "Navigate back"
 		wait_load()
-		days = driver.find_elements_by_xpath("//div[contains(text(), '$')]/..")
+		days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
 
 exit_script()
