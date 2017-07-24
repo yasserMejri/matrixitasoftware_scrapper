@@ -113,6 +113,7 @@ def exit_script():
 
 		# display.popen.terminate()
 		display.popen.kill()
+		exit(0)
 	except:
 		pass
 
@@ -150,6 +151,7 @@ def get_page_list():
 
 	global lowest_price
 	global result
+	global currency_prefix
 
 	try:
 		print "Wait for loading Listing page"

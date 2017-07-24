@@ -1,10 +1,10 @@
 {
-	"PassengerCount" : 2,
-	"JourneyType" : 1,
-	"Origin" : "BOS",
-	"Destination" : "LAX",
+	"PassengerCount" : 1,
+	"JourneyType" : 0,
+	"Origin" : "LAX",
+	"Destination" : "BOS",
 	"FromDate" : "2017-07-29",
-	"ReturnDate" : "6",
-	"SearchType" :  1, 
+	"ReturnDate" : "",
+	"SearchType" :  0, 
 	"limit" : 30
 }
