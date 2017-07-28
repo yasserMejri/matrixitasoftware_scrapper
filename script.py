@@ -97,10 +97,13 @@ searchbutton = driver.find_element_by_xpath('//button[@id="searchButton-0"]')
 def save_result():
 	global result
 
-	print "TOTAL : " + str(len(result['list'])) + "  saved"
-
 	with open('out.json', 'w') as f:
 		f.write(json.dumps(result))
+
+	try:
+		print "TOTAL : " + str(len(result['list'])) + "  saved"
+	except:
+		print "TOTAL : " + str(len(result)) + "  saved"
 
 
 # Exit 
@@ -225,19 +228,36 @@ else:
 	print "Wait for loading month page"
 	wait_load()
 	days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
-	source = html.fromstring(driver.page_source)
-	prices = re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?',''.join(source.xpath("//td/div/div/div[2]/text()")))
-	for price in prices:
-		if lowest_price == -1 or lowest_price > int(price[0]):
-			lowest_price = int(price[0])
-	print lowest_price
-	for idx in range(0, len(days)):
-		print "Getting " + str(idx) + " day page"
-		days[idx].click()
-		get_page_list()
-		driver.execute_script("window.history.go(-1)")
-		print "Navigate back"
-		wait_load()
-		days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
+	year = parameters['FromDate'].split('-')[0]
+	month = parameters['FromDate'].split('-')[1]
+
+	result = []
+
+	for day in days:
+		source = html.fromstring(day.get_attribute('innerHTML'))
+		data = source.xpath('//text()')
+		date = year + '-' + month + '-' + data[0]
+		price = data[1]
+		result.append({
+			'lowest_price': price, 
+			'date': date
+			})
+
+	exit_script()
+
+	# source = html.fromstring(driver.page_source)
+	# prices = re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?',''.join(source.xpath("//td/div/div/div[2]/text()")))
+	# for price in prices:
+	# 	if lowest_price == -1 or lowest_price > int(price[0]):
+	# 		lowest_price = int(price[0])
+	# print lowest_price
+	# for idx in range(0, len(days)):
+	# 	print "Getting " + str(idx) + " day page"
+	# 	days[idx].click()
+	# 	get_page_list()
+	# 	driver.execute_script("window.history.go(-1)")
+	# 	print "Navigate back"
+	# 	wait_load()
+	# 	days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
 
 # exit_script()
