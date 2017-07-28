@@ -177,9 +177,10 @@ def get_page_list():
 		idx = 2
 		# price = int(json_item['price'].replace('US','').replace('*','').replace(',','').replace('$',''))
 		# print re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?', json_item['price'])
-		price = re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?', json_item['price'])[0][0]
-		currency_prefix = json_item['price'].replace(price,'')
-		price = int(price.replace(',',''))
+		
+		currency_prefix = json_item['price'][:re.search(r'\d', json_item['price']).start()]
+		price = json_item['price'].replace(currency_prefix, '').replace(',','').replace('*','')
+		price = int(price)
 		if lowest_price == -1 or lowest_price > price:
 			lowest_price = price
 		for tr in source.xpath('//tr'):
@@ -224,6 +225,12 @@ else:
 	print "Wait for loading month page"
 	wait_load()
 	days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
+	source = html.fromstring(driver.page_source)
+	prices = re.findall(r'(\d+|\d{1,3}(,\d{3})*)(\.\d+)?',''.join(source.xpath("//td/div/div/div[2]/text()")))
+	for price in prices:
+		if lowest_price == -1 or lowest_price > int(price[0]):
+			lowest_price = int(price[0])
+	print lowest_price
 	for idx in range(0, len(days)):
 		print "Getting " + str(idx) + " day page"
 		days[idx].click()
@@ -233,4 +240,4 @@ else:
 		wait_load()
 		days = driver.find_elements_by_xpath("//td/div/div/div[2]/..")
 
-exit_script()
+# exit_script()
